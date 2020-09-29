@@ -72,7 +72,7 @@ impl VsockListener {
             bind(
                 socket,
                 &mut vsock_addr as *mut _ as *mut sockaddr,
-                size_of::<sockaddr_vm>() as u32,
+                size_of::<sockaddr_vm>() as socklen_t,
             )
         };
         if res < 0 {
@@ -234,7 +234,7 @@ impl VsockStream {
             connect(
                 sock,
                 &vsock_addr as *const _ as *const sockaddr,
-                size_of::<sockaddr_vm>() as u32,
+                size_of::<sockaddr_vm>() as socklen_t,
             )
         } < 0
         {
@@ -320,7 +320,7 @@ impl VsockStream {
                 SOL_SOCKET,
                 SO_SNDTIMEO,
                 &timeout as *const _ as *const c_void,
-                size_of::<timeval>() as u32,
+                size_of::<timeval>() as socklen_t,
             )
         } < 0
         {
@@ -339,7 +339,7 @@ impl VsockStream {
                 SOL_SOCKET,
                 SO_RCVTIMEO,
                 &timeout as *const _ as *const c_void,
-                size_of::<timeval>() as u32,
+                size_of::<timeval>() as socklen_t,
             )
         } < 0
         {
