@@ -13,19 +13,21 @@
 [package]
 edition = "2018"
 name = "vsock"
-version = "0.2.1"
-authors = ["fsyncd"]
+version = "0.2.3"
+authors = ["fsyncd", "rust-vsock"]
 exclude = ["test_fixture"]
 description = "Virtio socket support for Rust"
+homepage = "https://github.com/rust-vsock/vsock-rs"
+readme = "README.md"
 license = "Apache-2.0"
-repository = "https://github.com/fsyncd/vsock-rs"
+repository = "https://github.com/rust-vsock/vsock-rs"
 [dependencies.libc]
-version = "0.2.65"
+version = "0.2.79"
 
 [dependencies.nix]
-version = "0.17.0"
+version = "0.19.1"
 [dev-dependencies.rand]
-version = "0.7.2"
+version = "0.8.3"
 
 [dev-dependencies.sha2]
 version = ">=0.8.0"
