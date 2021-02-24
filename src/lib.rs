@@ -18,14 +18,15 @@
 //! Virtio socket support for Rust.
 
 use std::io::{Error, ErrorKind, Read, Result, Write};
-use std::mem::size_of;
+use std::mem::{self, size_of};
 use std::os::unix::io::{AsRawFd, FromRawFd, IntoRawFd, RawFd};
 
 use libc::*;
-use nix::sys::socket::{SockAddr, VsockAddr};
 use std::ffi::c_void;
 use std::net::Shutdown;
 use std::time::Duration;
+
+pub use nix::sys::socket::{SockAddr, VsockAddr};
 
 fn new_socket() -> libc::c_int {
     unsafe { socket(AF_VSOCK, SOCK_STREAM | SOCK_CLOEXEC, 0) }
@@ -86,6 +87,11 @@ impl VsockListener {
         }
 
         Ok(Self { socket })
+    }
+
+    /// Create a new VsockListener with specified cid and port.
+    pub fn bind_with_cid_port(cid: u32, port: u32) -> Result<VsockListener> {
+        Self::bind(&SockAddr::Vsock(VsockAddr::new(cid, port)))
     }
 
     /// The local socket address of the listener.
@@ -198,7 +204,9 @@ impl FromRawFd for VsockListener {
 
 impl IntoRawFd for VsockListener {
     fn into_raw_fd(self) -> RawFd {
-        self.socket
+        let fd = self.socket;
+        mem::forget(self);
+        fd
     }
 }
 
@@ -242,6 +250,11 @@ impl VsockStream {
         } else {
             Ok(unsafe { VsockStream::from_raw_fd(sock) })
         }
+    }
+
+    /// Open a connection to a remote host with specified cid and port.
+    pub fn connect_with_cid_port(cid: u32, port: u32) -> Result<Self> {
+        Self::connect(&SockAddr::Vsock(VsockAddr::new(cid, port)))
     }
 
     /// Virtio socket address of the remote peer associated with this connection.
@@ -393,6 +406,8 @@ impl VsockStream {
                     ));
                 }
 
+                // https://github.com/rust-lang/libc/issues/1848
+                #[cfg_attr(target_env = "musl", allow(deprecated))]
                 let secs = if dur.as_secs() > time_t::max_value() as u64 {
                     time_t::max_value()
                 } else {
@@ -478,7 +493,9 @@ impl FromRawFd for VsockStream {
 
 impl IntoRawFd for VsockStream {
     fn into_raw_fd(self) -> RawFd {
-        self.socket
+        let fd = self.socket;
+        mem::forget(self);
+        fd
     }
 }
 
