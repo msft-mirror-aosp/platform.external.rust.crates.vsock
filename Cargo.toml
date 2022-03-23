@@ -3,16 +3,17 @@
 # When uploading crates to the registry Cargo will automatically
 # "normalize" Cargo.toml files for maximal compatibility
 # with all versions of Cargo and also rewrite `path` dependencies
-# to registry (e.g., crates.io) dependencies.
+# to registry (e.g., crates.io) dependencies
 #
-# If you are reading this file be aware that the original Cargo.toml
-# will likely look very different (and much more reasonable).
-# See Cargo.toml.orig for the original contents.
+# If you believe there's an error in this file please file an
+# issue against the rust-lang/cargo repository. If you're
+# editing this file be aware that the upstream Cargo.toml
+# will likely look very different (and much more reasonable)
 
 [package]
 edition = "2018"
 name = "vsock"
-version = "0.2.6"
+version = "0.2.3"
 authors = ["fsyncd", "rust-vsock"]
 exclude = ["test_fixture"]
 description = "Virtio socket support for Rust"
@@ -24,7 +25,7 @@ repository = "https://github.com/rust-vsock/vsock-rs"
 version = "0.2.79"
 
 [dependencies.nix]
-version = "0.23.0"
+version = "0.19.1"
 [dev-dependencies.rand]
 version = "0.8.3"
 
